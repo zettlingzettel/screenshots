@@ -65,9 +65,9 @@ export default function AuthScreen() {
             <TextInput 
           label="Password" 
           autoCapitalize="none" 
-          autoComplete="password" 
           keyboardType="default" 
           mode="outlined"
+          secureTextEntry
           style={styles.input}
           onChangeText={setPassword}
         />

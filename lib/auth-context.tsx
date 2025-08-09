@@ -2,19 +2,26 @@ import { createContext, useContext, useState } from 'react';
 import { ID, Models } from 'react-native-appwrite';
 import { account } from './appwrite';
 
+
+
 type AuthContextType = {
   // user: Models.User<Models.Preferences> | null; 
   signUp: (email:string, password:string) => Promise<string | null>;
   signIn: (email:string, password:string) => Promise<string | null>;
 }
 
+//  Creates an AuthContext.
+// Starts as undefined so we can throw an error
+//  if useAuth is used outside a provider.
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Stores the logged-in user in state 
 export function AuthProvider({ children}: {children: React.ReactNode} ) {
   const [user, setUser] = useState<Models.User<Models.Preferences> | null>(null);(
     null
   );
 
+  // Creates an account in Appwrite
   const signUp = async (email:string, password:string) => {
     try {
       await account.create(ID.unique(), email, password);
@@ -32,7 +39,8 @@ export function AuthProvider({ children}: {children: React.ReactNode} ) {
     const signIn = async (email:string, password:string) => {
     try {
       await account.createEmailPasswordSession(email, password);
-      await signIn(email, password);
+      const session = await account.get();
+      setUser(session);
       return null;
     } catch (error) {
       if (error instanceof Error) {
@@ -42,6 +50,7 @@ export function AuthProvider({ children}: {children: React.ReactNode} ) {
     }
   }
 
+  // Makes signUp and signIn available to any component wrapped in AuthProvider.
   return <AuthContext.Provider
     value={{ signUp, signIn}}
     >
@@ -49,6 +58,7 @@ export function AuthProvider({ children}: {children: React.ReactNode} ) {
   </AuthContext.Provider>
 }
 
+// Allows you to use const { signUp, signIn } = useAuth(); anywhere in the app.
 export function useAuth() {
   const context = useContext(AuthContext)
   if (context === undefined) {
