@@ -10,13 +10,14 @@ function RouteGuard( { children }: { children: React.ReactNode }) {
   useEffect(() => {
     const inAuthGroup = segments[0] === "auth";
 
-    if (!user && !inAuthGroup && !isLoadingUser) {
-      router.replace("/auth");
-    } else if (user && inAuthGroup && !isLoadingUser) {
-      router.replace("/");
+    if (!isLoadingUser) {
+      if (!user && !inAuthGroup && !isLoadingUser) {
+        router.replace("/auth");
+      } else if (user && inAuthGroup && !isLoadingUser) {
+        router.replace("/");
+      }
     }
-  }, [user, segments]);
-
+  }, [user, segments, isLoadingUser]);
   return <>{children}</>;
 }
 

@@ -3,12 +3,12 @@ import { ID, Models } from 'react-native-appwrite';
 import { account } from './appwrite';
 
 
-
 type AuthContextType = {
   user: Models.User<Models.Preferences> | null; 
   isLoadingUser: boolean;
   signUp: (email:string, password:string) => Promise<string | null>;
   signIn: (email:string, password:string) => Promise<string | null>;
+  signOut: () => Promise<void>;
 }
 
 //  Creates an AuthContext.
@@ -23,7 +23,7 @@ export function AuthProvider({ children}: {children: React.ReactNode} ) {
     null
   );
 
-  const [isLoadingUser, setIsLoadingUser] = useState(true);
+  const [isLoadingUser, setIsLoadingUser] = useState<boolean>(true);
 
   
 // when the screen first renders
@@ -72,17 +72,28 @@ export function AuthProvider({ children}: {children: React.ReactNode} ) {
     }
   }
 
+  const signOut = async () => {
+    try {
+      await account.deleteSession('current');
+      setUser(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // Makes signUp and signIn available to any component wrapped in AuthProvider.
-  return <AuthContext.Provider
-    value={{ user, isLoadingUser, signUp, signIn }}
-  >
-    {children}
-  </AuthContext.Provider>
+  return (
+    <AuthContext.Provider
+      value={{ user, isLoadingUser, signUp, signIn, signOut }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 // Allows you to use const { signUp, signIn } = useAuth(); anywhere in the app.
 export function useAuth() {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
