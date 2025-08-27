@@ -33,6 +33,11 @@ Planned features for upcoming releases:
 - **TypeScript** — Type-safe JavaScript  
 - **Appwrite** — Authentication  
 
+## 🚧 Roadmap
+- **N8N** - API maintenance
+- **Firebase** - Database
+
+
 ---
 
 ## 📌 Status
