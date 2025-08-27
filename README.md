@@ -34,8 +34,8 @@ Planned features for upcoming releases:
 - **Appwrite** — Authentication  
 
 ## 🚧 Roadmap
-- **N8N** - API maintenance
-- **Firebase** - Database
+- **Kestra** - API maintenance
+- **Firebase / Supabase** - Database
 
 
 ---
